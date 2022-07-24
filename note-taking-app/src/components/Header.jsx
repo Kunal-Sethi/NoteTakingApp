@@ -15,6 +15,7 @@ function Header() {
                 <li>Home</li>
                 <li>About</li>
                 <li>Contact</li>
+                <li>Contact</li>
             </ul>
         </div>
     </div>
