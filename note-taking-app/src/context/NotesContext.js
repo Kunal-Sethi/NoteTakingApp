@@ -1,17 +1,29 @@
 import { createContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NotesData from "../data/NotesData";
 
 const NotesContext = createContext();
 
 export const NotesProvider = ({ children }) => {
-  const [todoText, setTodoText] = useState(NotesData);
+  //   const [todoText, setTodoText] = useState(NotesData);
+  const [todoText, setTodoText] = useState([]);
   const [notesEdit, setNotesEdit] = useState({
     item: {},
     edit: false,
   });
   const [addText, setAddText] = useState("");
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const fetchNotes = async () => {
+    const result = await fetch("http://localhost:15000/notes?_sort=id");
+    const data = await result.json();
+
+    setTodoText(data);
+  };
 
   const handleDelete = (id) => {
     setTodoText(todoText.filter((item) => item.id !== id));
@@ -25,25 +37,28 @@ export const NotesProvider = ({ children }) => {
     );
   };
 
+  //   const handleAdd = async (text) => {
   const handleAdd = (text) => {
     const newNote = {
       id: uuidv4(),
       text,
     };
-    if (notesEdit.edit === false) {
-      setTodoText([...todoText, newNote]);
-      setAddText("");
-      console.log("This is add");
-    } else {
-      updateNotes(notesEdit.item.id, text);
-      console.log("This is update", notesEdit.item.id);
-      //   setNotesEdit({
-      //     item: {},
-      //     edit: false,
-      //   });
-    }
-    // console.log(notesEdit.item.id, text);
-    console.log(notesEdit, text);
+
+    // const result = await fetch("http://localhost:15000/notes", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body(newNote)
+    // });
+
+    // const data = await result.json();
+
+    // setTodoText([...todoText, data]);
+    setTodoText([...todoText, newNote]);
+    setAddText("");
+    // console.log("This is add");
+    // console.log(notesEdit, text);
   };
 
   const editNotes = (item) => {
